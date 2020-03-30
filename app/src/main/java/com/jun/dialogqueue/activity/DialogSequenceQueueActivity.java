@@ -9,15 +9,16 @@ import android.support.v7.app.AppCompatActivity;
 import com.jun.dialogqueue.R;
 import com.jun.dialogqueue.util.DialogSequenceQueue;
 
-import static com.jun.dialogqueue.util.DialogSequenceQueue.TYPE0;
-import static com.jun.dialogqueue.util.DialogSequenceQueue.TYPE1;
-import static com.jun.dialogqueue.util.DialogSequenceQueue.TYPE2;
-import static com.jun.dialogqueue.util.DialogSequenceQueue.TYPE3;
-import static com.jun.dialogqueue.util.DialogSequenceQueue.TYPE4;
-import static com.jun.dialogqueue.util.DialogSequenceQueue.TYPE5;
-import static com.jun.dialogqueue.util.DialogSequenceQueue.TYPE6;
+import static com.jun.dialogqueue.util.DialogSequenceQueue.TYPE.TYPE1;
+import static com.jun.dialogqueue.util.DialogSequenceQueue.TYPE.TYPE2;
+import static com.jun.dialogqueue.util.DialogSequenceQueue.TYPE.TYPE3;
+import static com.jun.dialogqueue.util.DialogSequenceQueue.TYPE.TYPE4;
+import static com.jun.dialogqueue.util.DialogSequenceQueue.TYPE.TYPE5;
+import static com.jun.dialogqueue.util.DialogSequenceQueue.TYPE.TYPE6;
+import static com.jun.dialogqueue.util.DialogSequenceQueue.TYPE.TYPE7;
 
 public class DialogSequenceQueueActivity extends AppCompatActivity implements DialogSequenceQueue.DialogPopUpListener {
+
     private DialogSequenceQueue sequenceQueue;
 
     @Override
@@ -38,7 +39,7 @@ public class DialogSequenceQueueActivity extends AppCompatActivity implements Di
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                sequenceQueue.add(new DialogSequenceQueue.Element(TYPE0, false, null));
+                sequenceQueue.add(new DialogSequenceQueue.Element(TYPE1, null));
             }
         }, 5000);
     }
@@ -47,7 +48,7 @@ public class DialogSequenceQueueActivity extends AppCompatActivity implements Di
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                sequenceQueue.add(new DialogSequenceQueue.Element(TYPE1, true, null));
+                sequenceQueue.add(new DialogSequenceQueue.Element(TYPE2, true, null));
             }
         }, 15000);
     }
@@ -56,7 +57,7 @@ public class DialogSequenceQueueActivity extends AppCompatActivity implements Di
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                sequenceQueue.add(new DialogSequenceQueue.Element(TYPE2, true, null));
+                sequenceQueue.add(new DialogSequenceQueue.Element(TYPE3, true, null));
             }
         }, 6000);
     }
@@ -65,7 +66,7 @@ public class DialogSequenceQueueActivity extends AppCompatActivity implements Di
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                sequenceQueue.add(new DialogSequenceQueue.Element(TYPE3, false, null));
+                sequenceQueue.add(new DialogSequenceQueue.Element(TYPE4, null));
             }
         }, 5000);
     }
@@ -74,7 +75,7 @@ public class DialogSequenceQueueActivity extends AppCompatActivity implements Di
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                sequenceQueue.add(new DialogSequenceQueue.Element(TYPE4, true, null));
+                sequenceQueue.add(new DialogSequenceQueue.Element(TYPE5, true, null));
             }
         }, 4000);
     }
@@ -83,7 +84,7 @@ public class DialogSequenceQueueActivity extends AppCompatActivity implements Di
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                sequenceQueue.add(new DialogSequenceQueue.Element(TYPE5, true, null));
+                sequenceQueue.add(new DialogSequenceQueue.Element(TYPE6, true, null));
             }
         }, 10000);
     }
@@ -92,7 +93,7 @@ public class DialogSequenceQueueActivity extends AppCompatActivity implements Di
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                sequenceQueue.add(new DialogSequenceQueue.Element(TYPE6, true, null));
+                sequenceQueue.add(new DialogSequenceQueue.Element(TYPE7, true, null));
             }
         }, 3000);
     }
@@ -121,16 +122,8 @@ public class DialogSequenceQueueActivity extends AppCompatActivity implements Di
     @Override
     public void onPopUp(DialogSequenceQueue.Element element) {
         switch (element.getType()) {
-            case TYPE0:
-                showDialog("1").setOnDismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        sequenceQueue.next(TYPE0);
-                    }
-                });
-                break;
             case TYPE1:
-                showDialog("2").setOnDismissListener(new DialogInterface.OnDismissListener() {
+                showDialog("1").setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
                         sequenceQueue.next(TYPE1);
@@ -138,7 +131,7 @@ public class DialogSequenceQueueActivity extends AppCompatActivity implements Di
                 });
                 break;
             case TYPE2:
-                showDialog("3").setOnDismissListener(new DialogInterface.OnDismissListener() {
+                showDialog("2").setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
                         sequenceQueue.next(TYPE2);
@@ -146,7 +139,7 @@ public class DialogSequenceQueueActivity extends AppCompatActivity implements Di
                 });
                 break;
             case TYPE3:
-                showDialog("4").setOnDismissListener(new DialogInterface.OnDismissListener() {
+                showDialog("3").setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
                         sequenceQueue.next(TYPE3);
@@ -154,7 +147,7 @@ public class DialogSequenceQueueActivity extends AppCompatActivity implements Di
                 });
                 break;
             case TYPE4:
-                showDialog("5").setOnDismissListener(new DialogInterface.OnDismissListener() {
+                showDialog("4").setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
                         sequenceQueue.next(TYPE4);
@@ -162,7 +155,7 @@ public class DialogSequenceQueueActivity extends AppCompatActivity implements Di
                 });
                 break;
             case TYPE5:
-                showDialog("6").setOnDismissListener(new DialogInterface.OnDismissListener() {
+                showDialog("5").setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
                         sequenceQueue.next(TYPE5);
@@ -170,10 +163,18 @@ public class DialogSequenceQueueActivity extends AppCompatActivity implements Di
                 });
                 break;
             case TYPE6:
-                showDialog("7").setOnDismissListener(new DialogInterface.OnDismissListener() {
+                showDialog("6").setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
                         sequenceQueue.next(TYPE6);
+                    }
+                });
+                break;
+            case TYPE7:
+                showDialog("7").setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        sequenceQueue.next(TYPE7);
                     }
                 });
                 break;
