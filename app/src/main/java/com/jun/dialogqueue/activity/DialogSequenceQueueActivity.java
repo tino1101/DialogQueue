@@ -9,13 +9,13 @@ import android.support.v7.app.AppCompatActivity;
 import com.jun.dialogqueue.R;
 import com.jun.dialogqueue.util.DialogSequenceQueue;
 
-import static com.jun.dialogqueue.util.DialogSequenceQueue.TYPE.TYPE1;
-import static com.jun.dialogqueue.util.DialogSequenceQueue.TYPE.TYPE2;
-import static com.jun.dialogqueue.util.DialogSequenceQueue.TYPE.TYPE3;
-import static com.jun.dialogqueue.util.DialogSequenceQueue.TYPE.TYPE4;
-import static com.jun.dialogqueue.util.DialogSequenceQueue.TYPE.TYPE5;
-import static com.jun.dialogqueue.util.DialogSequenceQueue.TYPE.TYPE6;
-import static com.jun.dialogqueue.util.DialogSequenceQueue.TYPE.TYPE7;
+import static com.jun.dialogqueue.util.DialogSequenceQueue.Type.TYPE1;
+import static com.jun.dialogqueue.util.DialogSequenceQueue.Type.TYPE2;
+import static com.jun.dialogqueue.util.DialogSequenceQueue.Type.TYPE3;
+import static com.jun.dialogqueue.util.DialogSequenceQueue.Type.TYPE4;
+import static com.jun.dialogqueue.util.DialogSequenceQueue.Type.TYPE5;
+import static com.jun.dialogqueue.util.DialogSequenceQueue.Type.TYPE6;
+import static com.jun.dialogqueue.util.DialogSequenceQueue.Type.TYPE7;
 
 public class DialogSequenceQueueActivity extends AppCompatActivity implements DialogSequenceQueue.DialogPopUpListener {
 
