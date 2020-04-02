@@ -9,14 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import com.jun.dialogqueue.R;
 import com.jun.dialogqueue.util.DialogQueue;
 
-import static com.jun.dialogqueue.util.DialogQueue.TYPE4;
-import static com.jun.dialogqueue.util.DialogQueue.TYPE2;
-import static com.jun.dialogqueue.util.DialogQueue.TYPE5;
-import static com.jun.dialogqueue.util.DialogQueue.TYPE1;
-import static com.jun.dialogqueue.util.DialogQueue.TYPE6;
-import static com.jun.dialogqueue.util.DialogQueue.TYPE7;
-import static com.jun.dialogqueue.util.DialogQueue.TYPE3;
-
 public class DialogQueueActivity extends AppCompatActivity implements DialogQueue.PopUpListener {
 
     private DialogQueue queue;
@@ -42,9 +34,8 @@ public class DialogQueueActivity extends AppCompatActivity implements DialogQueu
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                DialogQueue.Element element = new DialogQueue.Element(TYPE1, null);
-                queue.addOrderExe(element);
-                queue.deleteOrderExe();
+                DialogQueue.Element element = new DialogQueue.Element(queue.types[0], null);
+                queue.add(element);
             }
         }, 3000);
     }
@@ -53,9 +44,8 @@ public class DialogQueueActivity extends AppCompatActivity implements DialogQueu
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                DialogQueue.Element element = new DialogQueue.Element(TYPE2, null);
-                queue.addOrderExe(element);
-                queue.deleteOrderExe();
+                DialogQueue.Element element = new DialogQueue.Element(queue.types[1], null);
+                queue.add(element);
             }
         }, 3000);
     }
@@ -64,8 +54,8 @@ public class DialogQueueActivity extends AppCompatActivity implements DialogQueu
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                DialogQueue.Element element = new DialogQueue.Element(TYPE3, null);
-                queue.addUnOrderExe(element);
+                DialogQueue.Element element = new DialogQueue.Element(queue.types[2], null);
+                queue.add(element);
             }
         }, 6000);
     }
@@ -74,8 +64,8 @@ public class DialogQueueActivity extends AppCompatActivity implements DialogQueu
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                DialogQueue.Element element = new DialogQueue.Element(TYPE4, null);
-                queue.addUnOrderExe(element);
+                DialogQueue.Element element = new DialogQueue.Element(queue.types[3], null);
+                queue.add(element);
             }
         }, 1000);
     }
@@ -84,8 +74,8 @@ public class DialogQueueActivity extends AppCompatActivity implements DialogQueu
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                DialogQueue.Element element = new DialogQueue.Element(TYPE5, null);
-                queue.addUnOrderExe(element);
+                DialogQueue.Element element = new DialogQueue.Element(queue.types[4], null);
+                queue.add(element);
             }
         }, 4000);
     }
@@ -94,8 +84,8 @@ public class DialogQueueActivity extends AppCompatActivity implements DialogQueu
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                DialogQueue.Element element = new DialogQueue.Element(TYPE6, null);
-                queue.addUnOrderExe(element);
+                DialogQueue.Element element = new DialogQueue.Element(queue.types[5], null);
+                queue.add(element);
             }
         }, 11000);
     }
@@ -104,8 +94,8 @@ public class DialogQueueActivity extends AppCompatActivity implements DialogQueu
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                DialogQueue.Element element = new DialogQueue.Element(TYPE7, null);
-                queue.addUnOrderExe(element);
+                DialogQueue.Element element = new DialogQueue.Element(queue.types[6], null);
+                queue.add(element);
             }
         }, 5000);
     }
@@ -136,63 +126,56 @@ public class DialogQueueActivity extends AppCompatActivity implements DialogQueu
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                switch (element.getType()) {
-                    case TYPE1:
-                        showDialog("1").setOnDismissListener(new DialogInterface.OnDismissListener() {
-                            @Override
-                            public void onDismiss(DialogInterface dialog) {
-                                queue.completeOrderExe();
-                            }
-                        });
-                        break;
-                    case TYPE2:
-                        showDialog("2").setOnDismissListener(new DialogInterface.OnDismissListener() {
-                            @Override
-                            public void onDismiss(DialogInterface dialog) {
-                                queue.completeOrderExe();
-                            }
-                        });
-                        break;
-                    case TYPE3:
-                        showDialog("3").setOnDismissListener(new DialogInterface.OnDismissListener() {
-                            @Override
-                            public void onDismiss(DialogInterface dialog) {
-                                queue.completeUnOrderExe();
-                            }
-                        });
-                        break;
-                    case TYPE4:
-                        showDialog("4").setOnDismissListener(new DialogInterface.OnDismissListener() {
-                            @Override
-                            public void onDismiss(DialogInterface dialog) {
-                                queue.completeUnOrderExe();
-                            }
-                        });
-                        break;
-                    case TYPE5:
-                        showDialog("5").setOnDismissListener(new DialogInterface.OnDismissListener() {
-                            @Override
-                            public void onDismiss(DialogInterface dialog) {
-                                queue.completeUnOrderExe();
-                            }
-                        });
-                        break;
-                    case TYPE6:
-                        showDialog("6").setOnDismissListener(new DialogInterface.OnDismissListener() {
-                            @Override
-                            public void onDismiss(DialogInterface dialog) {
-                                queue.completeUnOrderExe();
-                            }
-                        });
-                        break;
-                    case TYPE7:
-                        showDialog("7").setOnDismissListener(new DialogInterface.OnDismissListener() {
-                            @Override
-                            public void onDismiss(DialogInterface dialog) {
-                                queue.completeUnOrderExe();
-                            }
-                        });
-                        break;
+                final DialogQueue.Type type = element.getType();
+                if (type.orderValue == queue.types[0].orderValue) {
+                    showDialog("1").setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+                            queue.finish(type);
+                        }
+                    });
+                } else if (type.orderValue == queue.types[1].orderValue) {
+                    showDialog("2").setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+                            queue.finish(element.getType());
+                        }
+                    });
+                } else if (type.orderValue == queue.types[2].orderValue) {
+                    showDialog("3").setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+                            queue.finish(type);
+                        }
+                    });
+                } else if (type.orderValue == queue.types[3].orderValue) {
+                    showDialog("4").setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+                            queue.finish(type);
+                        }
+                    });
+                } else if (type.orderValue == queue.types[4].orderValue) {
+                    showDialog("5").setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+                            queue.finish(type);
+                        }
+                    });
+                } else if (type.orderValue == queue.types[5].orderValue) {
+                    showDialog("6").setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+                            queue.finish(type);
+                        }
+                    });
+                } else if (type.orderValue == queue.types[6].orderValue) {
+                    showDialog("7").setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+                            queue.finish(type);
+                        }
+                    });
                 }
             }
         }, 500);

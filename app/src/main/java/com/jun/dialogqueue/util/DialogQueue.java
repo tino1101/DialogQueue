@@ -7,19 +7,22 @@ import java.util.List;
 
 public class DialogQueue {
 
-    /**
-     * 弹窗类型
-     */
-    public final static int TYPE1 = 1;
-    public final static int TYPE2 = 2;
-    public final static int TYPE3 = 3;
-    public final static int TYPE4 = 4;
-    public final static int TYPE5 = 5;
-    public final static int TYPE6 = 6;
-    public final static int TYPE7 = 7;
+    public Type[] types = new Type[]{
+            new Type("TYPE1", true, 0),
+            new Type("TYPE2", true, 1),
+            new Type("TYPE3", false, 2),
+            new Type("TYPE4", false, 3),
+            new Type("TYPE5", false, 4),
+            new Type("TYPE6", false, 5),
+            new Type("TYPE7", false, 6),
+    };
+
 
     public DialogQueue(PopUpListener popUpListener) {
         this.popUpListener = popUpListener;
+        for (int i = 0; i < types.length; i++) {
+            if (types[i].isOrder) orderExecuteNum++;
+        }
     }
 
     /**
@@ -29,7 +32,7 @@ public class DialogQueue {
     /**
      * 顺序弹窗数量
      */
-    volatile private int orderExecuteNum = 2;
+    volatile private int orderExecuteNum;
     /**
      * 顺序弹窗列表
      */
@@ -49,17 +52,50 @@ public class DialogQueue {
     /**
      * 非顺序弹窗列表是否可以开始弹出
      */
-    boolean canUnOrderExe = false;
+    private boolean canUnOrderExe = false;
+
 
     /**
-     * 顺序弹窗需要弹出时添加
+     * 添加弹窗到队列
+     *
+     * @param element 弹窗元素
      */
-    public void addOrderExe(Element element) {
-        synchronized (orderExecuteList) {
-            orderExecuteList.add(element);
-            if (orderExecuteList.size() == orderExecuteNum) {
-                Collections.sort(orderExecuteList, comparator);
-                executeOrder();
+    public void add(Element element) {
+        if (element.type.isOrder) {//顺序弹窗需要弹出时添加
+            synchronized (orderExecuteList) {
+                orderExecuteList.add(element);
+                if (orderExecuteList.size() == orderExecuteNum) {
+                    Collections.sort(orderExecuteList, comparator);
+                    popupOrder();
+                }
+            }
+        } else {//非顺序弹窗需要弹出时添加
+            synchronized (unOrderExecuteList) {
+                unOrderExecuteList.add(element);
+                if (canUnOrderExe && currentElement == null) {
+                    popupUnOrder();
+                }
+            }
+        }
+    }
+
+    /**
+     * 弹窗关闭处理
+     *
+     * @param type 弹窗类型
+     */
+    public void finish(Type type) {
+        if (type.isOrder) {//顺序弹窗关闭
+            synchronized (orderExecuteList) {
+                orderExecuteList.remove(currentElement);
+                currentElement = null;
+                popupOrder();
+            }
+        } else {//非顺序弹窗关闭
+            synchronized (unOrderExecuteList) {
+                unOrderExecuteList.remove(currentElement);
+                currentElement = null;
+                popupUnOrder();
             }
         }
     }
@@ -72,62 +108,29 @@ public class DialogQueue {
             orderExecuteNum--;
             if (orderExecuteList.size() == orderExecuteNum) {
                 Collections.sort(orderExecuteList, comparator);
-                executeOrder();
+                popupOrder();
             }
-        }
-    }
-
-    /**
-     * 顺序弹窗关闭
-     */
-    public void completeOrderExe() {
-        synchronized (orderExecuteList) {
-            orderExecuteList.remove(currentElement);
-            currentElement = null;
-            executeOrder();
         }
     }
 
     /**
      * 顺序弹窗弹出
      */
-    private void executeOrder() {
+    private void popupOrder() {
         if (orderExecuteList.size() > 0) {
             currentElement = orderExecuteList.get(0);
             popUpListener.onPopUp(currentElement);
         } else {
             canUnOrderExe = true;
-            executeUnOrder();
+            popupUnOrder();
         }
     }
 
-    /**
-     * 非顺序弹窗需要弹出时添加
-     */
-    public void addUnOrderExe(Element element) {
-        synchronized (unOrderExecuteList) {
-            unOrderExecuteList.add(element);
-            if (canUnOrderExe && currentElement == null) {
-                executeUnOrder();
-            }
-        }
-    }
-
-    /**
-     * 非顺序弹窗关闭
-     */
-    public void completeUnOrderExe() {
-        synchronized (unOrderExecuteList) {
-            unOrderExecuteList.remove(currentElement);
-            currentElement = null;
-            executeUnOrder();
-        }
-    }
 
     /**
      * 非顺序弹窗弹出
      */
-    private void executeUnOrder() {
+    private void popupUnOrder() {
         if (unOrderExecuteList.size() > 0) {
             currentElement = unOrderExecuteList.get(0);
             popUpListener.onPopUp(currentElement);
@@ -137,10 +140,10 @@ public class DialogQueue {
     /**
      * 判断非顺序弹窗里是否已有type类型的元素
      */
-    public boolean hasType(int type) {
+    public boolean hasType(Type type) {
         if (unOrderExecuteList.size() > 0) {
             for (int i = 0; i < unOrderExecuteList.size(); i++) {
-                if (unOrderExecuteList.get(i).type == type) {
+                if (unOrderExecuteList.get(i).type.orderValue == type.orderValue) {
                     return true;
                 }
             }
@@ -151,7 +154,7 @@ public class DialogQueue {
     class OrderListComparator implements Comparator<Element> {
         @Override
         public int compare(Element o1, Element o2) {
-            return o1.type - o2.type;
+            return o1.type.orderValue - o2.type.orderValue;
         }
     }
 
@@ -163,18 +166,34 @@ public class DialogQueue {
     }
 
     /**
+     * 弹窗类型
+     */
+    public class Type {
+        public String name;
+        public boolean isOrder;
+        public int orderValue;
+
+        public Type(String name, boolean isOrder, int orderValue) {
+            this.name = name;
+            this.isOrder = isOrder;
+            this.orderValue = orderValue;
+        }
+
+    }
+
+    /**
      * 弹窗元素
      */
     public static class Element {
-        private int type;
+        private Type type;
         private Object data;
 
-        public Element(int type, Object data) {
+        public Element(Type type, Object data) {
             this.type = type;
             this.data = data;
         }
 
-        public int getType() {
+        public Type getType() {
             return type;
         }
 
