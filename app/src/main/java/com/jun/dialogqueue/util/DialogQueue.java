@@ -68,10 +68,10 @@ public class DialogQueue {
      */
     public void enqueue(Element element) {
         if (element.type.isOrder) {//顺序弹窗需要弹出时添加
-            if (orderedQueue.size() > element.type.ordinal() && orderedQueue.get(element.type.ordinal()) == null) {
+            if (orderedQueue.size() > element.type.ordinal()) {
                 synchronized (orderedQueue) {
                     orderedQueue.set(element.type.ordinal(), element);
-//                    if (element.needPopup) {
+                    if (element.needPopup) {
                         boolean show = true;
                         for (int i = 0; i < element.type.ordinal(); i++) {
                             if (null == orderedQueue.get(i) || null != orderedQueue.get(i) && orderedQueue.get(i).needPopup && !orderedQueue.get(i).isPopup) {
@@ -82,10 +82,10 @@ public class DialogQueue {
                         if (element.needPopup && show) {
                             popupListener.onPopup(element);
                         }
-//                    }
-//                    else {
-//                        dequeue(element.type);
-//                    }
+                    } else {
+                        if (orderedQueue.size() > element.type.ordinal() + 1)
+                            enqueue(orderedQueue.get(element.type.ordinal() + 1));
+                    }
                 }
             }
         } else {//非顺序弹窗需要弹出时添加
